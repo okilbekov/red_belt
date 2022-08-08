@@ -1,24 +1,56 @@
 #pragma once
 
+#include <algorithm>
 #include <cstdlib>
 
-// Реализуйте шаблон SimpleVector
 template <typename T>
 class SimpleVector {
 public:
-  SimpleVector();
-  explicit SimpleVector(size_t size);
-  ~SimpleVector();
+	SimpleVector() = default;
 
-  T& operator[](size_t index);
+	explicit SimpleVector(size_t size)
+		: size(size), capacity(size) {
+			data = new T[size];
+	}
 
-  T* begin();
-  T* end();
+	~SimpleVector() {
+		delete[] data;
+	}
 
-  size_t Size() const;
-  size_t Capacity() const;
-  void PushBack(const T& value);
+	T& operator[](size_t index) {
+		return *(data + index);
+	}
+
+	T* begin() {
+		return data;
+	}
+	T* end() {
+		return data + size;
+	}
+
+	size_t Size() const {
+		return size;
+	}
+	size_t Capacity() const {
+		return capacity;
+	}
+	void PushBack(const T& value) {
+		if(capacity == 0) {
+			data = new T[1];
+			capacity = 1;
+		}
+		else if(size == capacity) {
+			T* new_data = new T[2 * capacity];
+			std::copy(data, data + size, new_data);
+			delete[] data;
+			data = new_data;
+			capacity *= 2;
+		}
+		*(data + size) = value;
+		size += 1;
+	}
 
 private:
-  // Добавьте поля для хранения данных вектора
+	int capacity = 0, size = 0;
+	T* data{};
 };

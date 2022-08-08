@@ -2,9 +2,11 @@
 #include "test_runner.h"
 
 #include <algorithm>
+#include <numeric>
 #include <iostream>
 #include <vector>
 #include <string>
+
 using namespace std;
 
 void TestConstruction() {
@@ -36,9 +38,25 @@ void TestPushBack() {
   ASSERT(equal(begin(v), end(v), begin(expected)));
 }
 
+void TestBigVector() {
+  SimpleVector<int> v(100000);
+  iota(v.begin(), v.end(), 1);
+
+  vector<int> expected(100000);
+  iota(expected.begin(), expected.end(), 1);
+  ASSERT_EQUAL(v.Size(), expected.size());
+  ASSERT(equal(begin(v), end(v), begin(expected)));
+}
+
+void TestEmptyVector() {
+  SimpleVector<int> v;
+}
+
 int main() {
   TestRunner tr;
   RUN_TEST(tr, TestConstruction);
   RUN_TEST(tr, TestPushBack);
+  RUN_TEST(tr, TestBigVector);
+  RUN_TEST(tr, TestEmptyVector);
   return 0;
 }
